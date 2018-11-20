@@ -1,9 +1,10 @@
-html, body {
+html,
+body {
   margin: 0;
 }
 
 html {
-  visibility: hidden;
+  /* visibility: hidden; */
 }
 
 .wf-active {
@@ -25,7 +26,7 @@ html {
   border-radius: 6px;
   border: 1px solid rgb(200, 200, 200);
 
-  box-shadow: 0 0 18px rgba(0,0,0,.15);
+  box-shadow: 0 0 18px rgba(0, 0, 0, 0.15);
 }
 
 @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
@@ -80,7 +81,7 @@ html {
 
 .spectrum--dark .cssdocs-example,
 .spectrum--darkest .cssdocs-example {
-  box-shadow: 0 0 18px rgba(240, 240, 240, .20);
+  box-shadow: 0 0 18px rgba(240, 240, 240, 0.2);
 }
 
 .spectrum--dark .cssdocs-example,
@@ -103,8 +104,8 @@ html {
 
 .cssdocs-Overlay-example {
   position: relative;
-  background: rgba(0,0,0,0.4);
-  color: rgba(0,0,0,0.4);
+  background: rgba(0, 0, 0, 0.4);
+  color: rgba(0, 0, 0, 0.4);
 }
 
 .cssdocs-Dialog {
@@ -155,7 +156,7 @@ pre code {
 }
 
 .cssdocs-example-markupToggle::before {
-  content: '';
+  content: "";
 
   position: absolute;
   left: 0;
@@ -165,9 +166,12 @@ pre code {
   width: 100%;
   height: 32px;
 
-  background: linear-gradient(to bottom, rgba(255,255,255,0) 10%,rgba(255,255,255,1) 100%);
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0) 10%,
+    rgba(255, 255, 255, 1) 100%
+  );
 }
-
 
 .spectrum--dark .cssdocs-example-markupToggle,
 .spectrum--darkest .cssdocs-example-markupToggle {
@@ -175,7 +179,11 @@ pre code {
 }
 .spectrum--dark .cssdocs-example-markupToggle::before,
 .spectrum--darkest .cssdocs-example-markupToggle::before {
-  background: linear-gradient(to bottom, rgba(40,40,40,0) 10%,rgba(40,40,40,1) 100%);
+  background: linear-gradient(
+    to bottom,
+    rgba(40, 40, 40, 0) 10%,
+    rgba(40, 40, 40, 1) 100%
+  );
 }
 
 /** **/
@@ -343,7 +351,6 @@ pre.html {
   }
 }
 
-
 .sdldocs-badge {
   display: inline-flex;
   height: 20px;
@@ -353,7 +360,7 @@ pre.html {
   letter-spacing: 0.04em;
   color: white;
   font-weight: 300;
-  text-shadow: 0 1px 0 rgb(0,0,0,0.3);
+  text-shadow: 0 1px 0 rgb(0, 0, 0, 0.3);
 }
 .sdldocs-badge-label,
 .sdldocs-badge-version {
@@ -363,12 +370,12 @@ pre.html {
 .sdldocs-badge-label {
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
-  background-color: #4B4B4B;
+  background-color: #4b4b4b;
 }
 .sdldocs-badge-version {
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
-  background-color: #1473E6;
+  background-color: #1473e6;
 }
 
 /* For documentation beautification only - DO NOT COPY */

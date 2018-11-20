@@ -1,0 +1,70 @@
+doctype html
+html.spectrum--medium
+  head
+    meta(charset = 'utf-8')
+    meta('http-equiv' = 'X-UA-Compatible', content = 'IE=edge,chrome=1')
+    title Spectrum CSS Documentation
+    meta(name="viewport", content="user-scalable=no,initial-scale = 1.0,maximum-scale = 1.0")
+
+    link(rel='stylesheet', type='text/css', href='css/vendor/github.css', data-rainbow)
+    link(rel='stylesheet', type='text/css', href='../spectrum-lightest.css')
+    link(rel='stylesheet', type='text/css', href='../spectrum-light.css')
+    link(rel='stylesheet', type='text/css', href='../spectrum-dark.css')
+    link(rel='stylesheet', type='text/css', href='../spectrum-darkest.css')
+
+    link(rel='stylesheet', type='text/css', href='css/docs.css')
+
+    script(src='../icons/loadIcons.js')
+    script(src='js/vendor/focus-ring-polyfill.js')
+
+  body.spectrum.spectrum--light
+    .sdldocs-outer
+      header.sdldocs-header
+        h2.spectrum-Heading--pageTitle
+          img.sdldocs-header-logo-image(src='img/spectrum_logo_light.svg', alt='Adobe Spectrum Logo')
+          span.sdldocs-header-title.
+            spectrum-css #{pkg.version}
+        div.sdldocs-spectrumVersion.sdldocs-badge
+          div.sdldocs-badge-label.
+            Spectrum
+          div.sdldocs-badge-version.
+            4
+        div.sdl-switcher
+          label.spectrum-FieldLabel.spectrum-FieldLabel--left.
+            Scale
+          .spectrum-Dropdown
+            select.spectrum-FieldButton.spectrum-Dropdown-trigger#scale
+              option(value="medium,standalone")|Medium
+              option(value="large,standalone")|Large
+              option(value="medium,diff")|Medium (diff)
+              option(value="large,diff")|Large (diff)
+            svg.spectrum-Icon.spectrum-UIIcon-ChevronDownMedium.spectrum-Dropdown-icon
+              use(xlink:href="#spectrum-css-icon-ChevronDownMedium")
+          label.spectrum-FieldLabel.spectrum-FieldLabel--left.
+            Color Theme
+          .spectrum-Dropdown
+            select.spectrum-FieldButton.spectrum-Dropdown-trigger#colorstop
+              option(value="lightest")|Lightest
+              option(value="light")|Light
+              option(value="dark")|Dark
+              option(value="darkest")|Darkest
+            svg.spectrum-Icon.spectrum-UIIcon-ChevronDownMedium.spectrum-Dropdown-icon
+              use(xlink:href="#spectrum-css-icon-ChevronDownMedium")
+
+      section.sdldocs-splitview.spectrum-SplitView.spectrum-SplitView--horizontal
+        .sdldocs-scrollable.spectrum-SplitView-pane.sdldocs-nav
+          nav.spectrum.spectrum--light
+            ul.spectrum-SideNav
+              each component in index.components
+                li.spectrum-SideNav-item
+                  a.spectrum-SideNav-itemLink(href='?page='+component.slug+'#'+component.demo)= component.name
+
+        .sdldocs-scrollable.spectrum-SplitView-pane.sdldocs-components
+          .spectrum.spectrum--light#components
+
+          div.spectrum-Underlay#spectrum-underlay
+
+    script(type="text/javascript", src='js/vendor/rainbow-custom.min.js')
+    script(type="text/javascript", src='js/vendor/typekit.js')
+    script(src='js/docs.js')
+    script(src='js/nav.js')

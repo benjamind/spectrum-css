@@ -1,0 +1,67 @@
+each component in document.components
+  -
+    var showSubStyles = false;
+    if (component.cssStatus !== 'Deprecated' && component.cssStatus !== 'CSS Verified' && component.components) {
+      showSubStyles = Object.keys(component.components).some(function(subComponentId) {
+        var subComponent = component.components[subComponentId];
+        return subComponent.dnaStatus != component.dnaStatus || subComponent.cssStatus != component.cssStatus;
+      });
+    }
+  article.cssdocs-component
+    header.row.middle-sm(id=component.slug)
+      a(href=`#${component.slug}`).sdldocs-subtleLink.js-hashtitle
+        h2.sdldocs-component-name.spectrum-Heading--pageTitle #{component.name}
+      if component.cssStatus != 'n/a' && !showSubStyles
+        .u-tooltip-showOnHover
+          div(class=`sdldocs-dnaStatus spectrum-Label spectrum-Label--${component.dnaColor}`).
+            #{component.dnaStatus}
+          if component.dnaStatus != 'Deprecated'
+            div(class=`sdldocs-cssStatus spectrum-Label spectrum-Label--${component.cssColor}`).
+              #{component.cssStatus}
+          if component.details
+            .spectrum-Tooltip.spectrum-Tooltip--right
+              .spectrum-Tooltip-label!= component.details
+              .spectrum-Tooltip-tip
+
+    if component.description
+      section.sdldocs-component-description.spectrum-Body!= component.description
+
+    if component.components
+      each subComponent in component.components
+        section.sdldocs-subComponent
+          header.row.middle-sm.sdldocs-subComponent-header(id=`${component.slug}-${subComponent.id}`)
+            if subComponent.name
+              a(href=`#${component.slug}-${subComponent.id}`).sdldocs-subtleLink.js-hashtitle
+                h4.sdldocs-subComponent-name.spectrum-Heading--subtitle3!= subComponent.name
+            if subComponent.cssStatus != 'n/a' && showSubStyles
+              .u-tooltip-showOnHover
+                div(class=`sdldocs-dnaStatus spectrum-Label spectrum-Label--small spectrum-Label--${subComponent.dnaColor}`)
+                  = subComponent.dnaStatus
+                if subComponent.details
+                  .spectrum-Tooltip.spectrum-Tooltip--right
+                    .spectrum-Tooltip-label!= subComponent.details
+                    .spectrum-Tooltip-tip
+
+              if subComponent.dnaStatus != 'Deprecated'
+                div(class=`sdldocs-cssStatus spectrum-Label spectrum-Label--small spectrum-Label--${subComponent.cssColor}`).
+                  #{subComponent.cssStatus}
+
+          if subComponent.description
+            .spectrum-Body--small!= subComponent.description
+
+          section.cssdocs-example.spectrum
+            .cssdocs-example-demo(class=subComponent.demoClassName ? `${subComponent.demoClassName}` : '')!= subComponent.markup
+            .cssdocs-example-markup
+              if subComponent.markup.split('\n').length > 2
+                a.js-markup-toggle.cssdocs-example-markupToggle.spectrum-Link(href="#") Show Markup
+              pre
+                code(data-language="html")=subComponent.markup
+
+    else if component.markup
+      section.cssdocs-example.spectrum
+        .cssdocs-example-demo(class=component.demoClassName ? `${component.demoClassName}` : '')!= component.markup
+        .cssdocs-example-markup
+          if component.markup.split('\n').length > 2
+            a.js-markup-toggle.cssdocs-example-markupToggle.spectrum-Link(href="#") Show Markup
+          pre
+            code(data-language="html")=component.markup

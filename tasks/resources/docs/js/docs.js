@@ -5,7 +5,9 @@
 
 // Polyfill closest() on IE 11
 if (!Element.prototype.matches) {
-  Element.prototype.matches = Element.prototype.msMatchesSelector || Element.prototype.webkitMatchesSelector;
+  Element.prototype.matches =
+    Element.prototype.msMatchesSelector ||
+    Element.prototype.webkitMatchesSelector;
 }
 
 if (!Element.prototype.closest) {
@@ -19,27 +21,6 @@ if (!Element.prototype.closest) {
     } while (ancestor !== null);
     return null;
   };
-}
-
-var curColorstop = 'light';
-function changeCSS(colorStop) {
-  curColorstop = colorStop;
-  Array.prototype.forEach.call(document.getElementsByClassName('spectrum'), function(el) {
-    el.classList.remove('spectrum--lightest');
-    el.classList.remove('spectrum--light');
-    el.classList.remove('spectrum--dark');
-    el.classList.remove('spectrum--darkest');
-    el.classList.add('spectrum--'+colorStop);
-  });
-
-  if (colorStop === 'light' || colorStop === 'lightest') {
-    document.querySelector('link[data-rainbow]').setAttribute('href', 'css/vendor/github.css');
-  }
-  else {
-    document.querySelector('link[data-rainbow]').setAttribute('href', 'css/vendor/blackboard.css');
-  }
-
-  setURLParams();
 }
 
 function openDialog(dialog, withOverlay) {
@@ -112,164 +93,10 @@ function setHashFromScroll() {
     }
   }
   if (closestTitle && currentTitle !== closestTitle) {
-    selectNavItem(closestTitle.getAttribute('href'));
-    setURLParams(closestTitle.getAttribute('href'));
+    // selectNavItem(closestTitle.getAttribute('href'));
     currentTitle = closestTitle;
   }
 }
-
-var selectedNavItem = null;
-var nav;
-function selectNavItem(href) {
-  var navLink = document.querySelector('.sdldocs-nav [href="' + href + '"]');
-  if (navLink) {
-    var navItem = navLink.parentElement;
-
-    if (navItem != selectedNavItem) {
-      if (selectedNavItem) {
-        selectedNavItem.classList.remove('is-selected');
-      }
-      navItem.classList.add('is-selected');
-
-      if (navItem.offsetTop + navItem.offsetHeight > nav.scrollTop + nav.offsetHeight) {
-        // Scroll down to the item
-        nav.scrollTop = navItem.offsetTop - nav.offsetHeight + navItem.offsetHeight;
-      }
-      else if (navItem.offsetTop < nav.scrollTop) {
-        // Scroll up to the item
-        nav.scrollTop = navItem.offsetTop;
-      }
-
-      selectedNavItem = navItem;
-    }
-  }
-}
-
-window.ignoreScroll = false;
-
-var curScale = 'medium';
-var curMethod = 'standalone';
-var scaleAbbreviations = {
-  'medium': 'md',
-  'large': 'lg'
-};
-function changeScale(scale, method, noState) {
-  method = method || curMethod;
-  scale = scale || curScale;
-
-  if (method === 'diff') {
-    document.querySelector('link[data-spectrum-core]').setAttribute('href', '../spectrum-core.css');
-    document.querySelector('link[data-spectrum-core-diff]').setAttribute('href', '../spectrum-core-diff.css');
-  }
-  else if (method === 'standalone') {
-    if (scale !== 'medium') {
-      document.querySelector('link[data-spectrum-core]').setAttribute('href', '../spectrum-core-' + scaleAbbreviations[scale] + '.css');
-    }
-    else {
-      document.querySelector('link[data-spectrum-core]').setAttribute('href', '../spectrum-core.css');
-    }
-    document.querySelector('link[data-spectrum-core-diff]').setAttribute('href', '');
-  }
-
-  Object.keys(scaleAbbreviations).forEach(function(otherScale) {
-    document.documentElement.classList.remove('spectrum--' + otherScale);
-  });
-  document.documentElement.classList.add('spectrum--' + scale);
-
-  // Swap out icons
-  // var uiIcons = scale === 'medium' ? mediumIcons : largeIcons;
-  // var oldUIIcons = scale != 'medium' ? mediumIcons : largeIcons;
-  // document.head.insertBefore(uiIcons, null);
-  // if (oldUIIcons.parentElement) {
-  //   oldUIIcons.parentElement.removeChild(oldUIIcons);
-  // }
-
-  // Scroll to the same place we were before
-  if (currentTitle) {
-    var count = 0;
-    window.ignoreScroll = true;
-    document.querySelector('.sdldocs-components').scrollTop = currentTitle.offsetTop;
-    var interval = window.setInterval(function() {
-      document.querySelector('.sdldocs-components').scrollTop = currentTitle.offsetTop;
-      count++;
-      if (count > 50) {
-        clearInterval(interval);
-        window.ignoreScroll = false;
-      }
-    }, 10);
-  }
-
-  curScale = scale;
-  curMethod = method;
-
-  if (!noState) {
-    setURLParams();
-  }
-}
-
-var scaleDropdown;
-var colorstopDropdown;
-function setURLParams(hash) {
-  hash = hash || window.location.hash;
-  window.history.pushState({}, '', '?color='+curColorstop+'&scale='+curScale+'&method='+curMethod+hash);
-
-  // Set radio buttons
-  scaleDropdown.value = curScale+','+curMethod;
-  colorstopDropdown.value = curColorstop;
-}
-
-window.addEventListener('DOMContentLoaded', function() {
-  // Get elements once
-  titles = document.getElementsByClassName('js-hashtitle');
-  nav = document.querySelector('.sdldocs-nav');
-  scaleDropdown = document.querySelector('#scale');
-  colorstopDropdown = document.querySelector('#colorstop');
-
-  var searchParams = new URLSearchParams(document.location.search.substring(1));
-  // Set scale from params
-  var colorStop = searchParams.get('color');
-  var scale = searchParams.get('scale');
-  var method = searchParams.get('method');
-  if (scale || method) {
-    curColorstop = colorStop;
-    curScale = scale;
-    curMethod = method;
-    changeCSS(curColorstop);
-    changeScale(curScale, curMethod, true);
-  }
-
-  if (window.location.hash) {
-    // Scroll to the hash
-    // This is required for refreshes when the size is changed
-    var el = document.querySelector(window.location.hash);
-    if (el) {
-      document.querySelector('.sdldocs-components').scrollTop = el.offsetTop;
-    }
-  }
-  else {
-    // Make it #official
-    setHashFromScroll();
-  }
-
-  // Set the hash while scrolling
-  var lastTime = 0;
-  var scrollTimeDelay = 100;
-  var hashTimeout;
-  document.querySelector('.sdldocs-components').addEventListener('scroll', function() {
-    clearTimeout(hashTimeout);
-    if (window.ignoreScroll) {
-      return;
-    }
-    var time = Date.now();
-    if (time - lastTime > scrollTimeDelay) {
-      setHashFromScroll();
-      lastTime = time;
-    }
-    else {
-      hashTimeout = setTimeout(setHashFromScroll, scrollTimeDelay);
-    }
-  });
-});
 
 document.addEventListener('focus', toggleSliderFocus, true);
 document.addEventListener('blur', toggleSliderFocus, true);
@@ -290,18 +117,20 @@ loadIcons('../icons/spectrum-css-icons.svg');
 loadIcons('../icons/spectrum-icons.svg');
 
 function changeLoader(loader, value, submask1, submask2) {
-  submask1 = submask1 || loader.querySelector('.spectrum-CircleLoader-fillSubMask1');
-  submask2 = submask2 || loader.querySelector('.spectrum-CircleLoader-fillSubMask2');
+  submask1 =
+    submask1 || loader.querySelector('.spectrum-CircleLoader-fillSubMask1');
+  submask2 =
+    submask2 || loader.querySelector('.spectrum-CircleLoader-fillSubMask2');
   var angle;
-  if(value > 0 && value <= 50) {
-    angle = -180 + (value/50 * 180);
-    submask1.style.transform = 'rotate('+angle+'deg)';
+  if (value > 0 && value <= 50) {
+    angle = -180 + (value / 50) * 180;
+    submask1.style.transform = 'rotate(' + angle + 'deg)';
     submask2.style.transform = 'rotate(-180deg)';
   }
   else if (value > 50) {
-    angle = -180 + (value-50)/50 * 180;
+    angle = -180 + ((value - 50) / 50) * 180;
     submask1.style.transform = 'rotate(0deg)';
-    submask2.style.transform = 'rotate('+angle+'deg)';
+    submask2.style.transform = 'rotate(' + angle + 'deg)';
   }
 }
 
@@ -335,7 +164,7 @@ function makeDoubleSlider(slider) {
     var sliderOffsetWidth = slider.offsetWidth;
     var sliderOffsetLeft = slider.offsetLeft + slider.offsetParent.offsetLeft;
 
-    var x = Math.max(Math.min(e.x-sliderOffsetLeft, sliderOffsetWidth), 0);
+    var x = Math.max(Math.min(e.x - sliderOffsetLeft, sliderOffsetWidth), 0);
     var percent = (x / sliderOffsetWidth) * 100;
 
     if (handle === leftHandle) {
@@ -347,11 +176,11 @@ function makeDoubleSlider(slider) {
     else {
       if (percent > parseFloat(leftHandle.style.left)) {
         handle.style.left = percent + '%';
-        rightTrack.style.width = (100 - percent) + '%';
+        rightTrack.style.width = 100 - percent + '%';
       }
     }
     middleTrack.style.left = leftHandle.style.left;
-    middleTrack.style.right = (100 - parseFloat(rightHandle.style.left)) + '%';
+    middleTrack.style.right = 100 - parseFloat(rightHandle.style.left) + '%';
   }
 
   // Set initial track position
@@ -359,8 +188,8 @@ function makeDoubleSlider(slider) {
   var endPercent = parseFloat(rightHandle.style.left);
   leftTrack.style.width = startPercent + '%';
   middleTrack.style.left = startPercent + '%';
-  middleTrack.style.right = (100 - endPercent) + '%';
-  rightTrack.style.width = (100 - endPercent) + '%';
+  middleTrack.style.right = 100 - endPercent + '%';
+  rightTrack.style.width = 100 - endPercent + '%';
 
   if (!slider.classList.contains('is-disabled')) {
     slider.addEventListener('mousedown', onMouseDown);
@@ -384,7 +213,8 @@ function makeSlider(slider) {
   if (buffers.length) {
     var leftBuffer = buffers[0];
     var rightBuffer = buffers[1];
-    var bufferedAmount = parseInt(handle.style.left, 10) + parseInt(rightBuffer.style.width, 10);
+    var bufferedAmount =
+      parseInt(handle.style.left, 10) + parseInt(rightBuffer.style.width, 10);
   }
 
   function onMouseDown(e, sliderHandle) {
@@ -399,11 +229,11 @@ function makeSlider(slider) {
     var sliderOffsetWidth = slider.offsetWidth;
     var sliderOffsetLeft = slider.offsetLeft + slider.offsetParent.offsetLeft;
 
-    var x = Math.max(Math.min(e.x-sliderOffsetLeft, sliderOffsetWidth), 0);
+    var x = Math.max(Math.min(e.x - sliderOffsetLeft, sliderOffsetWidth), 0);
     var percent = (x / sliderOffsetWidth) * 100;
     if (leftTrack && rightTrack && !isColor) {
       leftTrack.style.width = percent + '%';
-      rightTrack.style.width = (100 - percent) + '%';
+      rightTrack.style.width = 100 - percent + '%';
     }
     handle.style.left = percent + '%';
 
@@ -419,7 +249,7 @@ function makeSlider(slider) {
         leftBuffer.style.width = percent + '%';
         rightBuffer.style.width = 'auto';
         rightBuffer.style.left = percent + '%';
-        rightBuffer.style.right = (100 - bufferedAmount) + '%';
+        rightBuffer.style.right = 100 - bufferedAmount + '%';
       }
     }
   }
@@ -428,7 +258,7 @@ function makeSlider(slider) {
   var percent = parseInt(handle.style.left, 10);
   if (leftTrack && rightTrack && !isColor) {
     leftTrack.style.width = percent + '%';
-    rightTrack.style.width = (100 - percent) + '%';
+    rightTrack.style.width = 100 - percent + '%';
   }
 
   if (!slider.classList.contains('is-disabled')) {
@@ -456,7 +286,7 @@ function makeDial(dial) {
     var percent = (x / dialOffsetWidth) * 100;
 
     var deg = percent * 0.01 * (max - min) + min;
-    handle.style.transform = 'rotate('+ deg + 'deg'+')';
+    handle.style.transform = 'rotate(' + deg + 'deg' + ')';
   }
 
   if (!dial.classList.contains('is-disabled')) {
@@ -465,10 +295,16 @@ function makeDial(dial) {
 }
 
 window.addEventListener('DOMContentLoaded', function() {
-  Array.prototype.forEach.call(document.querySelectorAll('.spectrum-Slider'), function(slider) {
-    makeSlider(slider);
-  });
-  Array.prototype.forEach.call(document.querySelectorAll('.spectrum-Dial'), function(dial) {
-    makeDial(dial);
-  });
+  Array.prototype.forEach.call(
+    document.querySelectorAll('.spectrum-Slider'),
+    function(slider) {
+      makeSlider(slider);
+    }
+  );
+  Array.prototype.forEach.call(
+    document.querySelectorAll('.spectrum-Dial'),
+    function(dial) {
+      makeDial(dial);
+    }
+  );
 });

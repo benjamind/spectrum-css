@@ -14,5 +14,6 @@ require('./tasks/dev');
 require('./tasks/build-backstop');
 require('./tasks/test-backstop');
 require('./tasks/test');
+require('./tasks/docs/generate-docs');
 
 gulp.task('default', gulp.series('build'));
