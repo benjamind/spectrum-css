@@ -1,97 +1,101 @@
-.spectrum-Card {
-  border-color: var(--spectrum-card-border-color);
-  background-color: var(--spectrum-card-background-color);
+@component Card {
+  :host {
+    border-color: var(--spectrum-card-border-color);
+    background-color: var(--spectrum-card-background-color);
 
-  &:hover {
-    border-color: var(--spectrum-card-border-color-hover);
-  }
+    state(:hover) {
+      border-color: var(--spectrum-card-border-color-hover);
+    }
 
-  &.is-selected,
-  &:focus {
-    border-color: var(--spectrum-card-border-color-key-focus);
-    box-shadow: 0 0 0 1px var(--spectrum-card-border-color-key-focus);
-  }
+    state(selected),
+    state(:focus) {
+      border-color: var(--spectrum-card-border-color-key-focus);
+      box-shadow: 0 0 0 1px var(--spectrum-card-border-color-key-focus);
+    }
 
-  &.is-drop-target {
-    border-color: var(--spectrum-card-border-color-key-focus);
-    box-shadow: 0 0 0 1px var(--spectrum-card-border-color-key-focus);
-    background-color: var(--spectrum-alias-highlight-selected);
-  }
-}
-
-.spectrum-Card-description {
-  color: var(--spectrum-card-description-text-color);
-}
-
-.spectrum-Card-coverPhoto {
-  background-color: var(--spectrum-card-coverphoto-background-color);
-  border-bottom-color: var(--spectrum-card-coverphoto-border-color);
-}
-
-.spectrum-Card-footer {
-  border-color: var(--spectrum-card-border-color);
-}
-
-.spectrum-Card--quiet,
-.spectrum-Card--gallery {
-  border-color: transparent;
-  background-color: transparent;
-
-  .spectrum-Card-preview {
-    background-color: var(--spectrum-card-quiet-preview-background-color);
-  }
-
-  &:hover {
-    border-color: transparent;
-    .spectrum-Card-preview {
-      background-color: var(--spectrum-card-quiet-preview-background-color-hover);
+    state(drop-target) {
+      border-color: var(--spectrum-card-border-color-key-focus);
+      box-shadow: 0 0 0 1px var(--spectrum-card-border-color-key-focus);
+      background-color: var(--spectrum-alias-highlight-selected);
     }
   }
 
-  &.is-selected,
-  &:focus {
-    border-color: transparent;
-    box-shadow: none;
-    .spectrum-Card-preview {
-      background-color: var(--spectrum-card-quiet-preview-background-color);
-
-      &:before {
-        border-color: var(--spectrum-card-quiet-border-color-selected);
-        box-shadow: 0 0 0 1px var(--spectrum-card-quiet-border-color-selected);
-      }
-    }
+  #description {
+    color: var(--spectrum-card-description-text-color);
   }
 
-  &.is-drop-target {
+  content(coverPhoto) {
+    background-color: var(--spectrum-card-coverphoto-background-color);
+    border-bottom-color: var(--spectrum-card-coverphoto-border-color);
+  }
+
+  content(footer) {
+    border-color: var(--spectrum-card-border-color);
+  }
+
+  variant(quiet),
+  variant(gallery) {
     border-color: transparent;
     background-color: transparent;
-    box-shadow: none;
 
-    .spectrum-Card-preview {
-      background-color: var(--spectrum-alias-highlight-selected);
+    content(preview) {
+      background-color: var(--spectrum-card-quiet-preview-background-color);
+    }
 
-      &:before {
-        border-color: var(--spectrum-card-quiet-border-color-selected);
-        box-shadow: 0 0 0 1px var(--spectrum-card-quiet-border-color-selected);
+    state(:hover) {
+      border-color: transparent;
+      content(preview) {
+        background-color: var(
+          --spectrum-card-quiet-preview-background-color-hover
+        );
       }
     }
 
-    .spectrum-Asset-folderBackground,
-    .spectrum-Asset-fileBackground {
-      fill: var(--spectrum-alias-highlight-selected);
-    }
-    
-    .spectrum-Asset-folderOutline,
-    .spectrum-Asset-fileOutline {
-      fill: var(--spectrum-card-quiet-border-color-selected);
-    }
-  }
+    state(selected),
+    state(:focus) {
+      border-color: transparent;
+      box-shadow: none;
+      content(preview) {
+        background-color: var(--spectrum-card-quiet-preview-background-color);
 
-  .spectrum-Card-title {
-    color: var(--spectrum-card-quiet-title-text-color);
-  }
+        state(:before) {
+          border-color: var(--spectrum-card-quiet-border-color-selected);
+          box-shadow: 0 0 0 1px var(--spectrum-card-quiet-border-color-selected);
+        }
+      }
+    }
 
-  .spectrum-Card-subtitle {
-    color: var(--spectrum-card-quiet-subtitle-text-color);
+    state(drop-target) {
+      border-color: transparent;
+      background-color: transparent;
+      box-shadow: none;
+
+      content(preview) {
+        background-color: var(--spectrum-alias-highlight-selected);
+
+        state(:before) {
+          border-color: var(--spectrum-card-quiet-border-color-selected);
+          box-shadow: 0 0 0 1px var(--spectrum-card-quiet-border-color-selected);
+        }
+      }
+
+      .spectrum-Asset-folderBackground,
+      .spectrum-Asset-fileBackground {
+        fill: var(--spectrum-alias-highlight-selected);
+      }
+
+      .spectrum-Asset-folderOutline,
+      .spectrum-Asset-fileOutline {
+        fill: var(--spectrum-card-quiet-border-color-selected);
+      }
+    }
+
+    attribute(title) {
+      color: var(--spectrum-card-quiet-title-text-color);
+    }
+
+    attribute(subtitle) {
+      color: var(--spectrum-card-quiet-subtitle-text-color);
+    }
   }
 }

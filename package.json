@@ -3,6 +3,7 @@
   "version": "2.7.2",
   "scripts": {
     "build": "gulp",
+    "build-lite": "gulp build-css:individual-components-md",
     "dev": "gulp dev",
     "start": "npm run dev",
     "ci-all": "npm run build",
@@ -61,7 +62,7 @@
     "postcss-import": "^10.0.0",
     "postcss-inherit": "^4.0.3",
     "postcss-mixins": "^6.2.0",
-    "postcss-nested": "^3.0.0",
+    "postcss-nested": "^4.1.1",
     "postcss-remtopx": "^1.0.0",
     "postcss-svg": "^2.1.0",
     "prismjs": "^1.15.0",
