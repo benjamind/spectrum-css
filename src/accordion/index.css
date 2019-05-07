@@ -6,103 +6,122 @@
   --spectrum-accordion-icon-height: 10px;
 
   /* Subtract the size of the border since it's on the item itself */
-  --spectrum-accordion-item-height-actual: calc(var(--spectrum-accordion-item-height) - var(--spectrum-accordion-item-border-size));
-  --spectrum-accordion-item-title-tracking-actual: calc(var(--spectrum-accordion-item-title-tracking) / 100);
+  --spectrum-accordion-item-height-actual: calc(
+    var(--spectrum-accordion-item-height) -
+      var(--spectrum-accordion-item-border-size)
+  );
+  --spectrum-accordion-item-title-tracking-actual: calc(
+    var(--spectrum-accordion-item-title-tracking) / 100
+  );
 }
 
 /* topdoc
 {{ accordion/accordion.yml }}
 */
-.spectrum-Accordion {
-  display: block;
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.spectrum-Accordion-itemIndicator {
-  display: block;
-
-  position: absolute;
-  left: var(--spectrum-accordion-icon-spacing);
-  top: calc(var(--spectrum-accordion-item-height-actual) / 2 - var(--spectrum-accordion-icon-height) / 2);
-
-  transition: transform ease var(--spectrum-global-animation-duration-100);
-}
-
-.spectrum-Accordion-item {
-  z-index: inherit;
-  position: relative;
-
-  display: list-item;
-  margin: 0;
-
-  border-bottom: var(--spectrum-accordion-item-border-size) solid transparent;
-
-  &:first-of-type {
-    border-top: var(--spectrum-accordion-item-border-size) solid transparent;
+component(Accordion) {
+  :host {
+    display: block;
+    list-style: none;
+    padding: 0;
+    margin: 0;
   }
-}
 
-.spectrum-Accordion-itemHeader {
-  position: relative;
+  state(foo),
+  state(bar) {
+    color: red;
+  }
 
-  box-sizing: border-box;
-  /* left padding takes into account the icon's size as well as the focus state's left border */
-  padding: 0 var(--spectrum-accordion-item-padding) 0 calc(calc(var(--spectrum-accordion-item-padding) * 2) + 2px);
-  margin: 0;
+  component(Accordion-item) {
+    :host {
+      z-index: inherit;
+      position: relative;
 
-  height: var(--spectrum-accordion-item-height-actual);
+      display: list-item;
+      margin: 0;
 
-  font-size: var(--spectrum-accordion-item-title-text-size);
-  text-transform: uppercase;
-  line-height: var(--spectrum-accordion-item-height-actual);
-  letter-spacing: var(--spectrum-accordion-item-title-tracking-actual);
+      border-bottom: var(--spectrum-accordion-item-border-size) solid
+        transparent;
 
-  text-overflow: ellipsis;
-  cursor: pointer;
-  font-weight: 500;
+      &:first-of-type {
+        border-top: var(--spectrum-accordion-item-border-size) solid transparent;
+      }
 
-  &:focus {
-    outline: none;
+      state(open) {
+        > .itemIndicator {
+          transform: rotate(90deg);
+        }
 
-    &::after {
-      content: '';
+        > .itemHeader::after {
+          /* No bottom border when open, so be less tall */
+          height: var(--spectrum-accordion-item-height-actual);
+        }
+
+        > .itemContent {
+          display: block;
+        }
+      }
+
+      state(disabled) {
+        .itemHeader {
+          cursor: default;
+        }
+      }
+    }
+
+    #indicator {
+      display: block;
 
       position: absolute;
-      left: 0;
-      top: calc(-1 * var(--spectrum-accordion-item-border-size));
-      bottom: calc(-1 * var(--spectrum-accordion-item-border-size));
+      left: var(--spectrum-accordion-icon-spacing);
+      top: calc(
+        var(--spectrum-accordion-item-height-actual) / 2 -
+          var(--spectrum-accordion-icon-height) / 2
+      );
 
-      width: var(--spectrum-accordion-item-border-size-key-focus);
-    }
-  }
-}
-
-.spectrum-Accordion-itemContent {
-  padding: 0 var(--spectrum-accordion-item-content-padding) var(--spectrum-accordion-item-content-padding) var(--spectrum-accordion-item-content-padding);
-  display: none;
-}
-
-.spectrum-Accordion-item {
-  &.is-open {
-    > .spectrum-Accordion-itemIndicator {
-      transform: rotate(90deg);
+      transition: transform ease var(--spectrum-global-animation-duration-100);
     }
 
-    > .spectrum-Accordion-itemHeader::after {
-      /* No bottom border when open, so be less tall */
+    #header {
+      position: relative;
+
+      box-sizing: border-box;
+      /* left padding takes into account the icon's size as well as the focus state's left border */
+      padding: 0 var(--spectrum-accordion-item-padding) 0
+        calc(calc(var(--spectrum-accordion-item-padding) * 2) + 2px);
+      margin: 0;
+
       height: var(--spectrum-accordion-item-height-actual);
+
+      font-size: var(--spectrum-accordion-item-title-text-size);
+      text-transform: uppercase;
+      line-height: var(--spectrum-accordion-item-height-actual);
+      letter-spacing: var(--spectrum-accordion-item-title-tracking-actual);
+
+      text-overflow: ellipsis;
+      cursor: pointer;
+      font-weight: 500;
+
+      &:focus {
+        outline: none;
+
+        &::after {
+          content: '';
+
+          position: absolute;
+          left: 0;
+          top: calc(-1 * var(--spectrum-accordion-item-border-size));
+          bottom: calc(-1 * var(--spectrum-accordion-item-border-size));
+
+          width: var(--spectrum-accordion-item-border-size-key-focus);
+        }
+      }
     }
 
-    > .spectrum-Accordion-itemContent {
-      display: block;
-    }
-  }
-
-  &.is-disabled {
-    .spectrum-Accordion-itemHeader {
-      cursor: default;
+    #content {
+      padding: 0 var(--spectrum-accordion-item-content-padding)
+        var(--spectrum-accordion-item-content-padding)
+        var(--spectrum-accordion-item-content-padding);
+      display: none;
     }
   }
 }

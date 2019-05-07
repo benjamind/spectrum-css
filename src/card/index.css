@@ -12,249 +12,255 @@
 {{ card/card-small.yml }}
 */
 
-.spectrum-Card {
-  position: relative;
+@component Card {
+  :host {
+    position: relative;
 
-  display: inline-flex;
-  flex-direction: column;
+    display: inline-flex;
+    flex-direction: column;
 
-  box-sizing: border-box;
-  min-width: var(--spectrum-card-min-width);
+    box-sizing: border-box;
+    min-width: var(--spectrum-card-min-width);
 
-  border: var(--spectrum-card-border-size) solid transparent;
-  border-radius: var(--spectrum-card-border-radius);
+    border: var(--spectrum-card-border-size) solid transparent;
+    border-radius: var(--spectrum-card-border-radius);
 
-  &:focus {
-    outline: none;
-  }
+    state(:focus) {
+      outline: none;
+    }
 
-  &.is-selected,
-  &:focus,
-  &:hover {
-    .spectrum-Card-quickActions,
-    .spectrum-Card-actions {
-      /* Ideally, this would simply apply is-open to the QuickActions component */
-      visibility: visible;
-      opacity: 1;
-      pointer-events: all;
+    state(selected),
+    state(:focus),
+    state(:hover) {
+      content(quickActions),
+      content(actions) {
+        /* Ideally, this would simply apply is-open to the QuickActions component */
+        visibility: visible;
+        opacity: 1;
+        pointer-events: all;
+      }
     }
   }
-}
 
-.spectrum-Card-actions {
-  position: absolute;
-  right: var(--spectrum-card-actions-margin);
-  top: var(--spectrum-card-actions-margin);
-  height: var(--spectrum-quickactions-height);
-  visibility: hidden;
-}
-
-.spectrum-Card-quickActions {
-  position: absolute;
-  left: var(--spectrum-card-checkbox-margin);
-  top: var(--spectrum-card-checkbox-margin);
-
-  width: var(--spectrum-quickactions-height);
-  height: var(--spectrum-quickactions-height);
-
-  visibility: hidden;
-
-  .spectrum-Checkbox {
-    margin: 0;
+  content(actions) {
+    position: absolute;
+    right: var(--spectrum-card-actions-margin);
+    top: var(--spectrum-card-actions-margin);
+    height: var(--spectrum-quickactions-height);
+    visibility: hidden;
   }
-}
 
-.spectrum-Card-coverPhoto {
-  height: var(--spectrum-card-coverphoto-height);
-  box-sizing: border-box;
+  content(quickActions) {
+    position: absolute;
+    left: var(--spectrum-card-checkbox-margin);
+    top: var(--spectrum-card-checkbox-margin);
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    width: var(--spectrum-quickactions-height);
+    height: var(--spectrum-quickactions-height);
 
-  border-bottom: var(--spectrum-card-coverphoto-border-bottom-size) solid transparent;
-  border-radius: calc(var(--spectrum-card-border-radius) - 1px) calc(var(--spectrum-card-border-radius) - 1px) 0 0;
+    visibility: hidden;
 
-  background-size: cover;
-  background-position: center center;
-}
-
-.spectrum-Card-body {
-  padding-top: var(--spectrum-card-body-padding-top);
-  padding-right: var(--spectrum-card-body-padding-right);
-  padding-bottom: var(--spectrum-card-body-padding-bottom);
-  padding-left: var(--spectrum-card-body-padding-left);
-
-  &:last-child {
-    border-radius: 0 0 var(--spectrum-card-border-radius) var(--spectrum-card-border-radius);
+    component(Checkbox) {
+      margin: 0;
+    }
   }
-}
 
-.spectrum-Card-preview {
-  overflow: hidden;
-  border-radius: calc(var(--spectrum-card-border-radius) - 1px) calc(var(--spectrum-card-border-radius) - 1px) 0 0;
-}
+  content(coverPhoto) {
+    height: var(--spectrum-card-coverphoto-height);
+    box-sizing: border-box;
 
-.spectrum-Card-header {
-  height: var(--spectrum-card-body-header-height);
-}
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-.spectrum-Card-content {
-  display: flex;
-  height: var(--spectrum-card-body-content-height);
-  margin-top: var(--spectrum-card-body-content-margin-top);
-}
+    border-bottom: var(--spectrum-card-coverphoto-border-bottom-size) solid
+      transparent;
+    border-radius: calc(var(--spectrum-card-border-radius) - 1px)
+      calc(var(--spectrum-card-border-radius) - 1px) 0 0;
 
-.spectrum-Card-title {
-  font-size: var(--spectrum-card-title-text-size);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  padding-right: var(--spectrum-card-title-padding-right);
-}
+    background-size: cover;
+    background-position: center center;
+  }
 
-.spectrum-Card-subtitle {
-  font-size: var(--spectrum-card-subtitle-text-size);
-  letter-spacing: var(--spectrum-card-subtitle-letter-spacing);
-  text-transform: uppercase;
-  padding-right: var(--spectrum-card-subtitle-padding-right);
-}
+  #body {
+    padding-top: var(--spectrum-card-body-padding-top);
+    padding-right: var(--spectrum-card-body-padding-right);
+    padding-bottom: var(--spectrum-card-body-padding-bottom);
+    padding-left: var(--spectrum-card-body-padding-left);
 
-.spectrum-Card-description {
-  font-size: var(--spectrum-card-subtitle-text-size);
-}
+    &:last-child {
+      border-radius: 0 0 var(--spectrum-card-border-radius)
+        var(--spectrum-card-border-radius);
+    }
+  }
 
-.spectrum-Card-subtitle + .spectrum-Card-description:before {
-  content: "•";
-  padding-right: var(--spectrum-card-subtitle-padding-right);
-}
+  content(preview) {
+    overflow: hidden;
+    border-radius: calc(var(--spectrum-card-border-radius) - 1px)
+      calc(var(--spectrum-card-border-radius) - 1px) 0 0;
+  }
 
-.spectrum-Card-footer {
-  padding-top: var(--spectrum-card-footer-padding-top);
-  margin-right: var(--spectrum-card-body-padding-right);
-  padding-bottom: var(--spectrum-card-body-padding-bottom);
-  margin-left: var(--spectrum-card-body-padding-left);
+  #header {
+    height: var(--spectrum-card-body-header-height);
+  }
 
-  border-top: var(--spectrum-card-footer-border-top-size) solid;
-}
+  content(content) {
+    display: flex;
+    height: var(--spectrum-card-body-content-height);
+    margin-top: var(--spectrum-card-body-content-margin-top);
+  }
 
-.spectrum-Card-header {
-  display: flex;
-  align-items: baseline;
-}
+  attribute(title) {
+    font-size: var(--spectrum-card-title-text-size);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-right: var(--spectrum-card-title-padding-right);
+  }
 
-.spectrum-Card-actionButton {
-  flex: 1;
-  align-self: center;
-  display: flex;
-  justify-content: flex-end;
-}
+  attribute(subtitle) {
+    font-size: var(--spectrum-card-subtitle-text-size);
+    letter-spacing: var(--spectrum-card-subtitle-letter-spacing);
+    text-transform: uppercase;
+    padding-right: var(--spectrum-card-subtitle-padding-right);
+  }
 
-/* topdoc
+  content(description) {
+    font-size: var(--spectrum-card-subtitle-text-size);
+  }
+
+  attribute(subtitle) + content(description):before {
+    content: '•';
+    padding-right: var(--spectrum-card-subtitle-padding-right);
+  }
+
+  content(footer) {
+    padding-top: var(--spectrum-card-footer-padding-top);
+    margin-right: var(--spectrum-card-body-padding-right);
+    padding-bottom: var(--spectrum-card-body-padding-bottom);
+    margin-left: var(--spectrum-card-body-padding-left);
+
+    border-top: var(--spectrum-card-footer-border-top-size) solid;
+  }
+
+  #header {
+    display: flex;
+    align-items: baseline;
+  }
+
+  content(actionButton) {
+    flex: 1;
+    align-self: center;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  /* topdoc
 {{ card/card-quiet-large.yml }}
 */
 
-/* topdoc
+  /* topdoc
 {{ card/card-quiet-small.yml }}
 */
 
-/* topdoc
+  /* topdoc
 {{ card/card-quiet-folder.yml }}
 */
 
-/* topdoc
+  /* topdoc
 {{ card/card-quiet-file.yml }}
 */
 
-/* topdoc
+  /* topdoc
 {{ card/card-gallery.yml }}
 */
 
-.spectrum-Card--quiet,
-.spectrum-Card--gallery {
-  width: 100%;
-  height: 100%;
-  min-width: var(--spectrum-card-quiet-min-size);
-  border-width: 0;
-  border-radius: 0;
-  overflow: visible;
-
-  .spectrum-Card-preview {
+  variant(quiet),
+  variant(gallery) {
     width: 100%;
-    flex: 1;
-    min-height: var(--spectrum-card-quiet-min-size);
-    padding: var(--spectrum-card-quiet-preview-padding);
-    margin: 0 auto;
-    box-sizing: border-box;
-    border-radius: var(--spectrum-card-quiet-border-radius);
-    position: relative;
-    transition: background-color var(--spectrum-transition-time);
-
-    /* Use a :before to show the selection outline so that the border doesn't
-     * affect the layout of the content within the preview. */
-    &:before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      box-sizing: border-box;
-      border-radius: inherit;
-      border: var(--spectrum-card-quiet-border-size) solid transparent;
-    }
-  }
-
-  &.is-drop-target {
-    .spectrum-Card-preview {
-      transition: none;
-    }
-  }
-
-  .spectrum-Card-header {
-    height: var(--spectrum-card-quiet-body-header-height);
-    margin-top: var(--spectrum-card-quiet-body-header-margin-top);
-  }
-
-  .spectrum-Card-body {
-    padding: 0;
-  }
-}
-
-.spectrum-Card--small {
-  min-width: var(--spectrum-card-quiet-small-min-size);
-
-  .spectrum-Card-quickActions {
-    left: var(--spectrum-card-quiet-small-checkbox-margin);
-    top: var(--spectrum-card-quiet-small-checkbox-margin);
-  }
-
-  .spectrum-Card-preview {
-    padding: var(--spectrum-card-quiet-small-preview-padding);
-    min-height: var(--spectrum-card-quiet-small-min-size);
-  }
-
-  .spectrum-Card-header {
-    margin-top: var(--spectrum-card-quiet-small-body-margin-top);
-    height: var(--spectrum-card-quiet-small-body-header-height);
-  }
-
-  .spectrum-Card-title {
-    font-size: var(--spectrum-card-quiet-small-title-text-size);
-  }
-
-  .spectrum-Card-content,
-  .spectrum-Card-subtitle,
-  .spectrum-Card-description {
-    display: none;
-  }
-}
-
-.spectrum-Card--gallery {
-  min-width: 0;
-
-  .spectrum-Card-preview {
-    padding: 0;
+    height: 100%;
+    min-width: var(--spectrum-card-quiet-min-size);
+    border-width: 0;
     border-radius: 0;
+    overflow: visible;
+
+    content(preview) {
+      width: 100%;
+      flex: 1;
+      min-height: var(--spectrum-card-quiet-min-size);
+      padding: var(--spectrum-card-quiet-preview-padding);
+      margin: 0 auto;
+      box-sizing: border-box;
+      border-radius: var(--spectrum-card-quiet-border-radius);
+      position: relative;
+      transition: background-color var(--spectrum-transition-time);
+
+      /* Use a :before to show the selection outline so that the border doesn't
+     * affect the layout of the content within the preview. */
+      &:before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        box-sizing: border-box;
+        border-radius: inherit;
+        border: var(--spectrum-card-quiet-border-size) solid transparent;
+      }
+    }
+
+    state(drop-target) {
+      content(preview) {
+        transition: none;
+      }
+    }
+
+    #header {
+      height: var(--spectrum-card-quiet-body-header-height);
+      margin-top: var(--spectrum-card-quiet-body-header-margin-top);
+    }
+
+    #body {
+      padding: 0;
+    }
+  }
+
+  variant(small) {
+    min-width: var(--spectrum-card-quiet-small-min-size);
+
+    content(quickActions) {
+      left: var(--spectrum-card-quiet-small-checkbox-margin);
+      top: var(--spectrum-card-quiet-small-checkbox-margin);
+    }
+
+    content(preview) {
+      padding: var(--spectrum-card-quiet-small-preview-padding);
+      min-height: var(--spectrum-card-quiet-small-min-size);
+    }
+
+    #header {
+      margin-top: var(--spectrum-card-quiet-small-body-margin-top);
+      height: var(--spectrum-card-quiet-small-body-header-height);
+    }
+
+    attribute(title) {
+      font-size: var(--spectrum-card-quiet-small-title-text-size);
+    }
+
+    content(content),
+    attribute(subtitle),
+    content(description) {
+      display: none;
+    }
+  }
+
+  variant(gallery) {
+    min-width: 0;
+
+    content(preview) {
+      padding: 0;
+      border-radius: 0;
+    }
   }
 }

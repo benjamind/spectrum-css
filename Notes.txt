@@ -1,0 +1,108 @@
+Component atRule:
+
+@component Accordion {
+    :host {
+        // ...foo...
+    }
+    .itemIndicator {
+        // ...bar...
+    }
+}
+
+Which expands to in CSS:
+.spectrum-Accordion {
+    // ...foo...
+}
+.spectrum-Accordion-itemIndicator {
+    // ...bar...
+}
+
+And in web components:
+:host {
+    // ...foo...
+}
+.itemIndicator {
+    // ... bar...
+}
+
+Alternatively:
+
+@component ".spectrum-Accordion";
+.spectrum-Accordion {
+    // ...foo...
+}
+.spectrum-Accordion-itemIndicator {
+    // ...bar...
+}
+
+Is transparent in CSS mode just removes the @component rule.
+But in web component mode, uses it to process all classnames prefixed with .spectrum-Accordion.
+
+
+
+
+
+Variation atRule:
+
+@component BarLoader {
+    @variation sideLabel {
+
+    }
+}
+
+Which expands to in CSS: 
+.spectrum-BarLoader--sideLabel {
+
+}
+
+And in web components css:
+:host([sideLabel]) {
+
+}
+
+
+
+alert: 
+    .spectrum-Alert-footer .spectrum-Button
+    .spectrum-Alert--info .spectrum-Alert-icon
+button:
+    adjacency selector could be problematic without knowing declared component name
+
+        e.g. .spectrum-Button + .spectrum-Button needs to become spectrum-button + spectrum-button
+    how do we deal with slotted content?
+
+        For example, an ActionButton with a single small size icon as its only child:
+            <button class="spectrum-ActionButton is-selected">
+                <svg class="spectrum-Icon spectrum-Icon--sizeS" focusable="false" aria-hidden="true" aria-label="Edit">
+                    <use xlink:href="#spectrum-icon-18-Edit" />
+                </svg>
+            </button>
+        This has special case styling for ensuring the icon is absolutely positioned.
+
+        But in a web component we would define this content as a slotted light dom content
+        e.g.
+            <spectrum-button>
+                <spectrum-icon size="s" slot="icon"></spectrum-icon>
+            </spectrum-button>
+
+        The selector for this content would be thus:
+            slot[name=icon]::slotted(spectrum-icon[size="s"]:only-child)
+
+        
+buttongroup:
+    breaks shadowdom boundary:
+        .spectrum-ButtonGroup--vertical {
+            .spectrum-ActionButton-label {
+
+            }
+        }
+        in web components with shadow dom this won't work, we'd need to use a variable instead:
+        :host([vertical]) {
+            --spectrum-action-button-label-flex-grow: 1;
+            --spectrum-action-button-label-text-align: left;
+        }
+    again uses sibling selectors with classnames
+card:
+    has special selectors which use other component names:
+    .spectrum-Card-quickActions .spectrum-Checkbox {}
+    we'd need markup on the other component to correctly rename it

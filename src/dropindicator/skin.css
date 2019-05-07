@@ -1,8 +1,10 @@
-.spectrum-DropIndicator {
-  background: var(--spectrum-dropindicator-border-color);
+@component DropIndicator {
+  :host {
+    background: var(--spectrum-dropindicator-border-color);
 
-  &:before,
-  &:after {
-    border-color: var(--spectrum-dropindicator-circle-border-color);
+    &:before,
+    &:after {
+      border-color: var(--spectrum-dropindicator-circle-border-color);
+    }
   }
 }

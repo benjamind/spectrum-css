@@ -1,68 +1,70 @@
-.spectrum-Alert {
-  background-color: var(--spectrum-alert-background-color);
-  /* default color set to body color, header element overwrites this */
-  color: var(--spectrum-alert-text-color);
-}
-
-.spectrum-Alert-header {
-  color: var(--spectrum-alert-title-text-color);
-}
-
-.spectrum-Alert-content {
-  color: var(--spectrum-alert-text-color);
-}
-
-/* topdoc
-{{ alert/alert-info.yml }}
-*/
-.spectrum-Alert--info {
-  border-color: var(--spectrum-alert-info-border-color);
-
-  .spectrum-Alert-icon {
-    color: var(--spectrum-alert-info-border-color);
+@component Alert {
+  :host {
+    background-color: var(--spectrum-alert-background-color);
+    /* default color set to body color, header element overwrites this */
+    color: var(--spectrum-alert-text-color);
   }
-}
 
-/* topdoc
-{{ alert/alert-help.yml }}
-*/
-.spectrum-Alert--help {
-  border-color: var(--spectrum-alert-info-border-color);
-
-  .spectrum-Alert-icon {
-    color: var(--spectrum-alert-info-border-color);
+  .header {
+    color: var(--spectrum-alert-title-text-color);
   }
-}
 
-/* topdoc
-{{ alert/alert-error.yml }}
-*/
-.spectrum-Alert--error {
-  border-color: var(--spectrum-alert-error-border-color);
-
-  .spectrum-Alert-icon {
-    color: var(--spectrum-alert-error-border-color);
+  .content {
+    color: var(--spectrum-alert-text-color);
   }
-}
 
-/* topdoc
-{{ alert/alert-success.yml }}
-*/
-.spectrum-Alert--success {
-  border-color: var(--spectrum-alert-success-border-color);
+  /* topdoc
+  {{ alert/alert-info.yml }}
+  */
+  @variant info {
+    border-color: var(--spectrum-alert-info-border-color);
 
-  .spectrum-Alert-icon {
-    color: var(--spectrum-alert-success-border-color);
+    .icon {
+      color: var(--spectrum-alert-info-border-color);
+    }
   }
-}
 
-/* topdoc
-{{ alert/alert-warning.yml }}
-*/
-.spectrum-Alert--warning {
-  border-color: var(--spectrum-alert-warning-border-color);
+  /* topdoc
+  {{ alert/alert-help.yml }}
+  */
+  @variant help {
+    border-color: var(--spectrum-alert-info-border-color);
 
-  .spectrum-Alert-icon {
-    color: var(--spectrum-alert-warning-border-color);
+    .icon {
+      color: var(--spectrum-alert-info-border-color);
+    }
+  }
+
+  /* topdoc
+  {{ alert/alert-error.yml }}
+  */
+  @variant error {
+    border-color: var(--spectrum-alert-error-border-color);
+
+    .icon {
+      color: var(--spectrum-alert-error-border-color);
+    }
+  }
+
+  /* topdoc
+  {{ alert/alert-success.yml }}
+  */
+  @variant success {
+    border-color: var(--spectrum-alert-success-border-color);
+
+    .icon {
+      color: var(--spectrum-alert-success-border-color);
+    }
+  }
+
+  /* topdoc
+  {{ alert/alert-warning.yml }}
+  */
+  @variant warning {
+    border-color: var(--spectrum-alert-warning-border-color);
+
+    .icon {
+      color: var(--spectrum-alert-warning-border-color);
+    }
   }
 }

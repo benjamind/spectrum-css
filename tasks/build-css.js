@@ -9,20 +9,21 @@ var merge = require('merge-stream');
 var plumb = require('./lib/plumb.js');
 var notnested = require('./lib/postcss-notnested');
 
-var colorStops = [
-  'darkest',
-  'dark',
-  'light',
-  'lightest'
-];
+var postcssComponents = require('./lib/postcss-component');
+
+var colorStops = ['darkest', 'dark', 'light', 'lightest'];
 
 var processors = [
   require('postcss-import'),
   require('postcss-mixins')({
     mixins: {
       typography: function(mixin, name, tokenName, textTransformIgnore) {
-        if(!tokenName) {
-          tokenName = name.replace(/\.?([A-Z]|[0-9])/g, function (x,y) { return '-' + y.toLowerCase(); }).replace(/^-/, '');
+        if (!tokenName) {
+          tokenName = name
+            .replace(/\.?([A-Z]|[0-9])/g, function(x, y) {
+              return '-' + y.toLowerCase();
+            })
+            .replace(/^-/, '');
           tokenName = tokenName.replace('.spectrum--', '');
         }
         var output = '';
@@ -34,11 +35,13 @@ var processors = [
           'letter-spacing': 'text-letter-spacing',
           'text-transform': 'text-transform',
         };
-        function buildProperties (tokeString) {
+        function buildProperties(tokeString) {
           var ruleString = '';
           Object.keys(propMap).forEach((key) => {
-            if(!textTransformIgnore || key != 'text-transform') {
-              ruleString += `  ${key}: var(--spectrum-${tokeString}-${propMap[key]});\n`;
+            if (!textTransformIgnore || key != 'text-transform') {
+              ruleString += `  ${key}: var(--spectrum-${tokeString}-${
+                propMap[key]
+              });\n`;
             }
           });
           ruleString += '  margin-top: 0;\n  margin-bottom: 0;\n';
@@ -58,8 +61,12 @@ var processors = [
         mixin.replaceWith(nodes);
       },
       typographyColor: function(mixin, name, tokenName) {
-        if(!tokenName) {
-          tokenName = name.replace(/\.?([A-Z]|[0-9])/g, function (x,y) { return '-' + y.toLowerCase(); }).replace(/^-/, '');
+        if (!tokenName) {
+          tokenName = name
+            .replace(/\.?([A-Z]|[0-9])/g, function(x, y) {
+              return '-' + y.toLowerCase();
+            })
+            .replace(/^-/, '');
           tokenName = tokenName.replace('.spectrum--', '');
         }
         var output = `${name} {
@@ -70,8 +77,12 @@ var processors = [
         mixin.replaceWith(nodes);
       },
       typographyMargins: function(mixin, name, tokenName) {
-        if(!tokenName) {
-          tokenName = name.replace(/\.?([A-Z]|[0-9])/g, function (x,y) { return '-' + y.toLowerCase(); }).replace(/^-/, '');
+        if (!tokenName) {
+          tokenName = name
+            .replace(/\.?([A-Z]|[0-9])/g, function(x, y) {
+              return '-' + y.toLowerCase();
+            })
+            .replace(/^-/, '');
           tokenName = tokenName.replace('.spectrum--', '');
         }
         var output = `${name} {
@@ -82,12 +93,13 @@ var processors = [
         nodes.nodes[0].append(mixin.nodes);
         mixin.replaceWith(nodes);
       },
-    }
+    },
   }),
+  postcssComponents,
   require('postcss-nested'),
   require('postcss-inherit'),
   require('postcss-custom-properties')({
-    noValueNotifications: 'error'
+    noValueNotifications: 'error',
   }),
   require('./lib/postcss-custom-properties-passthrough')(),
   require('postcss-calc'),
@@ -99,48 +111,54 @@ var processors = [
       },
       percent: function(value) {
         return parseInt(value, 10) / 100;
-      }
-    }
+      },
+    },
   }),
   require('postcss-focus-ring'),
   require('autoprefixer')({
-    'browsers': [
+    browsers: [
       'IE >= 10',
       'last 2 Chrome versions',
       'last 2 Firefox versions',
       'last 2 Safari versions',
-      'last 2 iOS versions'
-    ]
-  })
+      'last 2 iOS versions',
+    ],
+  }),
 ];
 
 /**
   Builds individual components (dimensions only)
 */
 gulp.task('build-css:individual-components-md', function() {
-  return gulp.src('src/*/index.css')
-    .pipe(plumb())
-    .pipe(insert.prepend('@import "../../vars/spectrum-medium.css";'))
-    .pipe(insert.prepend('@import "../../vars/spectrum-global.css";\n'))
-    .pipe(postcss(processors.concat([notnested()])))
-    // .pipe(rename(function(path) {
-    //   path.basename += '-md';
-    // }))
-    .pipe(gulp.dest('dist/components/'));
+  return (
+    gulp
+      .src('src/*/index.css')
+      .pipe(plumb())
+      .pipe(insert.prepend('@import "../../vars/spectrum-medium.css";'))
+      .pipe(insert.prepend('@import "../../vars/spectrum-global.css";\n'))
+      .pipe(postcss(processors.concat([notnested()])))
+      // .pipe(rename(function(path) {
+      //   path.basename += '-md';
+      // }))
+      .pipe(gulp.dest('dist/components/'))
+  );
 });
 
 /**
   Builds individual components (dimensions only)
 */
 gulp.task('build-css:individual-components-lg', function() {
-  return gulp.src('src/*/index.css')
+  return gulp
+    .src('src/*/index.css')
     .pipe(plumb())
     .pipe(insert.prepend('@import "../../vars/spectrum-large.css";'))
     .pipe(insert.prepend('@import "../../vars/spectrum-global.css";\n'))
     .pipe(postcss(processors.concat([notnested()])))
-    .pipe(rename(function(path) {
-      path.basename += '-lg';
-    }))
+    .pipe(
+      rename(function(path) {
+        path.basename += '-lg';
+      })
+    )
     .pipe(gulp.dest('dist/components/'));
 });
 
@@ -148,30 +166,35 @@ gulp.task('build-css:individual-components-lg', function() {
   Diffs md and large
 */
 gulp.task('build-css:individual-components-diffscale', function() {
-  return gulp.src('src/*/index.css')
-    .pipe(plumb())
-    // Get var statements only
-    .pipe(postcss([
-      require('./lib/postcss-varsonly')()
-    ]))
-    // Use large variables
-    .pipe(insert.prepend('@import "../../vars/spectrum-large.css";'))
-    .pipe(insert.prepend('@import "../../vars/spectrum-global.css";\n'))
-    // Build
-    .pipe(postcss(processors))
-    // Wrap in large
-    .pipe(insert.prepend('.spectrum--large {\n'))
-    .pipe(insert.append('\n}\n'))
-    // Stay as pixels
-    .pipe(postcss([
-      require('postcss-nested'),
-      require('postcss-remtopx'),
-      require('postcss-discard-empty')
-    ]))
-    .pipe(rename(function(path) {
-      path.basename += '-diff';
-    }))
-    .pipe(gulp.dest('dist/components/'));
+  return (
+    gulp
+      .src('src/*/index.css')
+      .pipe(plumb())
+      // Get var statements only
+      .pipe(postcss([require('./lib/postcss-varsonly')()]))
+      // Use large variables
+      .pipe(insert.prepend('@import "../../vars/spectrum-large.css";'))
+      .pipe(insert.prepend('@import "../../vars/spectrum-global.css";\n'))
+      // Build
+      .pipe(postcss(processors))
+      // Wrap in large
+      .pipe(insert.prepend('.spectrum--large {\n'))
+      .pipe(insert.append('\n}\n'))
+      // Stay as pixels
+      .pipe(
+        postcss([
+          require('postcss-nested'),
+          require('postcss-remtopx'),
+          require('postcss-discard-empty'),
+        ])
+      )
+      .pipe(
+        rename(function(path) {
+          path.basename += '-diff';
+        })
+      )
+      .pipe(gulp.dest('dist/components/'))
+  );
 });
 
 /**
@@ -180,22 +203,35 @@ gulp.task('build-css:individual-components-diffscale', function() {
 */
 gulp.task('build-css:individual-components-multistops', function() {
   function buildMultistopSkinFiles(colorStop) {
-    return gulp.src([
-      'src/*/skin.css',
-      '!src/commons/skin.css'
-    ])
-      .pipe(plumb())
-      .pipe(insert.prepend(`\n@import '../colorStops/spectrum-${colorStop}.css';\n.spectrum--${colorStop} {\n`))
-      .pipe(insert.prepend('@import "../../dist/vars/spectrum-global.css";\n'))
-      .pipe(insert.append('}\n'))
-      .pipe(postcss(processors))
-      // Fix a nested + inherit bug
-      .pipe(replace(`.spectrum--${colorStop} .spectrum--${colorStop}`, `.spectrum--${colorStop}`))
-      .pipe(rename(function(path) {
-        path.dirname += '/multiStops';
-        path.basename = colorStop;
-      }))
-      .pipe(gulp.dest('dist/components/'));
+    return (
+      gulp
+        .src(['src/*/skin.css', '!src/commons/skin.css'])
+        .pipe(plumb())
+        .pipe(
+          insert.prepend(
+            `\n@import '../colorStops/spectrum-${colorStop}.css';\n.spectrum--${colorStop} {\n`
+          )
+        )
+        .pipe(
+          insert.prepend('@import "../../dist/vars/spectrum-global.css";\n')
+        )
+        .pipe(insert.append('}\n'))
+        .pipe(postcss(processors))
+        // Fix a nested + inherit bug
+        .pipe(
+          replace(
+            `.spectrum--${colorStop} .spectrum--${colorStop}`,
+            `.spectrum--${colorStop}`
+          )
+        )
+        .pipe(
+          rename(function(path) {
+            path.dirname += '/multiStops';
+            path.basename = colorStop;
+          })
+        )
+        .pipe(gulp.dest('dist/components/'))
+    );
   }
 
   return merge.apply(this, colorStops.map(buildMultistopSkinFiles));
@@ -206,18 +242,27 @@ function buildSkinFiles(colorStop, globs, prependString, appendString, dest) {
   appendString = appendString || '';
   dest = dest || 'dist/components/';
 
-  return gulp.src(globs)
-    .pipe(plumb())
-    .pipe(insert.prepend(`@import '../colorStops/spectrum-${colorStop}.css';${prependString}`))
-    .pipe(insert.prepend('@import "../../dist/vars/spectrum-global.css";\n'))
-    .pipe(insert.append(appendString))
-    // Any stray & in colorstops should just apply to .spectrum
-    .pipe(postcss(processors.concat([notnested({ replace: '.spectrum' })])))
-    .pipe(rename(function(path) {
-      path.dirname += '/colorStops';
-      path.basename = colorStop;
-    }))
-    .pipe(gulp.dest(dest));
+  return (
+    gulp
+      .src(globs)
+      .pipe(plumb())
+      .pipe(
+        insert.prepend(
+          `@import '../colorStops/spectrum-${colorStop}.css';${prependString}`
+        )
+      )
+      .pipe(insert.prepend('@import "../../dist/vars/spectrum-global.css";\n'))
+      .pipe(insert.append(appendString))
+      // Any stray & in colorstops should just apply to .spectrum
+      .pipe(postcss(processors.concat([notnested({ replace: '.spectrum' })])))
+      .pipe(
+        rename(function(path) {
+          path.dirname += '/colorStops';
+          path.basename = colorStop;
+        })
+      )
+      .pipe(gulp.dest(dest))
+  );
 }
 
 /**
@@ -228,7 +273,7 @@ gulp.task('build-css:individual-components-colorstops', function() {
   function buildComponentSkinFiles(colorStop) {
     return buildSkinFiles(colorStop, [
       'src/*/skin.css',
-      '!src/page/skin.css' // Process separately
+      '!src/page/skin.css', // Process separately
     ]);
   }
   return merge.apply(this, colorStops.map(buildComponentSkinFiles));
@@ -239,7 +284,13 @@ gulp.task('build-css:individual-components-colorstops', function() {
 */
 gulp.task('build-css:page-component-colorstops', function() {
   function buildPageSkinFiles(colorStop) {
-    return buildSkinFiles(colorStop, 'src/page/skin.css', '.spectrum {\n', '\n}', 'dist/components/page/');
+    return buildSkinFiles(
+      colorStop,
+      'src/page/skin.css',
+      '.spectrum {\n',
+      '\n}',
+      'dist/components/page/'
+    );
   }
   return merge.apply(this, colorStops.map(buildPageSkinFiles));
 });
@@ -249,10 +300,8 @@ gulp.task('build-css:page-component-colorstops', function() {
   This task results in unresolved multistop files that require build-css:build-multistops to be ready-to-use
 */
 gulp.task('build-css:all-components-multistops', function() {
-  return gulp.src([
-    'src/spectrum-*.css',
-    '!src/spectrum-core.css'
-  ])
+  return gulp
+    .src(['src/spectrum-*.css', '!src/spectrum-core.css'])
     .pipe(plumb())
     .pipe(insert.prepend('@import "../dist/vars/spectrum-global.css";\n'))
     .pipe(postcss(processors))
@@ -263,29 +312,35 @@ gulp.task('build-css:all-components-multistops', function() {
   Builds core multistop files
 */
 gulp.task('build-css:core-md-multistops', function() {
-  return gulp.src('src/spectrum-core.css')
-    .pipe(plumb())
-    .pipe(insert.prepend('@import "../vars/spectrum-medium.css";'))
-    .pipe(insert.prepend('@import "../vars/spectrum-global.css";\n'))
-    .pipe(postcss(processors.concat([notnested()])))
-    // .pipe(rename(function(path) {
-    //   path.basename += '-md';
-    // }))
-    .pipe(gulp.dest('dist/'));
+  return (
+    gulp
+      .src('src/spectrum-core.css')
+      .pipe(plumb())
+      .pipe(insert.prepend('@import "../vars/spectrum-medium.css";'))
+      .pipe(insert.prepend('@import "../vars/spectrum-global.css";\n'))
+      .pipe(postcss(processors.concat([notnested()])))
+      // .pipe(rename(function(path) {
+      //   path.basename += '-md';
+      // }))
+      .pipe(gulp.dest('dist/'))
+  );
 });
 
 /**
   Builds core multistop files
 */
 gulp.task('build-css:core-lg-multistops', function() {
-  return gulp.src('src/spectrum-core.css')
+  return gulp
+    .src('src/spectrum-core.css')
     .pipe(plumb())
     .pipe(insert.prepend('@import "../vars/spectrum-large.css";'))
     .pipe(insert.prepend('@import "../vars/spectrum-global.css";\n'))
     .pipe(postcss(processors.concat([notnested()])))
-    .pipe(rename(function(path) {
-      path.basename += '-lg';
-    }))
+    .pipe(
+      rename(function(path) {
+        path.basename += '-lg';
+      })
+    )
     .pipe(gulp.dest('dist/'));
 });
 
@@ -294,14 +349,17 @@ gulp.task('build-css:core-lg-multistops', function() {
 */
 gulp.task('build-css:build-multistops', function() {
   function buildMultistops(colorStop) {
-    return gulp.src('dist/spectrum-' + colorStop + '.css')
-      .pipe(plumb())
-      // Simply wrap the file in the colorstop
-      // This is a workaround for the fact that postcss-import and postcss-nested can't play together
-      .pipe(insert.prepend(`.spectrum--${colorStop} {\n`))
-      .pipe(insert.append('}\n'))
-      .pipe(postcss([require('postcss-nested')]))
-      .pipe(gulp.dest('dist/'));
+    return (
+      gulp
+        .src('dist/spectrum-' + colorStop + '.css')
+        .pipe(plumb())
+        // Simply wrap the file in the colorstop
+        // This is a workaround for the fact that postcss-import and postcss-nested can't play together
+        .pipe(insert.prepend(`.spectrum--${colorStop} {\n`))
+        .pipe(insert.append('}\n'))
+        .pipe(postcss([require('postcss-nested')]))
+        .pipe(gulp.dest('dist/'))
+    );
   }
 
   return merge.apply(this, colorStops.map(buildMultistops));
@@ -312,14 +370,17 @@ gulp.task('build-css:build-multistops', function() {
 */
 gulp.task('build-css:concat-standalone-md', function() {
   function concatStandalone(colorStop) {
-    return gulp.src([
-      // 'dist/spectrum-core-md.css',
-      'dist/spectrum-core.css',
-      'dist/spectrum-' + colorStop + '.css'
-    ])
-      // .pipe(concat('spectrum-' + colorStop + '-md.css'))
-      .pipe(concat('spectrum-' + colorStop + '.css'))
-      .pipe(gulp.dest('dist/standalone'));
+    return (
+      gulp
+        .src([
+          // 'dist/spectrum-core-md.css',
+          'dist/spectrum-core.css',
+          'dist/spectrum-' + colorStop + '.css',
+        ])
+        // .pipe(concat('spectrum-' + colorStop + '-md.css'))
+        .pipe(concat('spectrum-' + colorStop + '.css'))
+        .pipe(gulp.dest('dist/standalone'))
+    );
   }
 
   return merge.apply(this, colorStops.map(concatStandalone));
@@ -327,10 +388,8 @@ gulp.task('build-css:concat-standalone-md', function() {
 
 gulp.task('build-css:concat-standalone-lg', function() {
   function concatStandalone(colorStop) {
-    return gulp.src([
-      'dist/spectrum-core-lg.css',
-      'dist/spectrum-' + colorStop + '.css'
-    ])
+    return gulp
+      .src(['dist/spectrum-core-lg.css', 'dist/spectrum-' + colorStop + '.css'])
       .pipe(concat('spectrum-' + colorStop + '-lg.css'))
       .pipe(gulp.dest('dist/standalone'));
   }
@@ -339,19 +398,21 @@ gulp.task('build-css:concat-standalone-lg', function() {
 });
 
 gulp.task('build-css:concat-core-diff', function() {
-  return gulp.src([
-    'src/components.css'
-  ])
-    .pipe(replace(/@import '(.*?)\/index\.css';/g, '@import "../dist/components/$1/index-diff.css";'))
-    .pipe(postcss([
-      require('postcss-import')
-    ]))
+  return gulp
+    .src(['src/components.css'])
+    .pipe(
+      replace(
+        /@import '(.*?)\/index\.css';/g,
+        '@import "../dist/components/$1/index-diff.css";'
+      )
+    )
+    .pipe(postcss([require('postcss-import')]))
     .pipe(rename('spectrum-core-diff.css'))
     .pipe(gulp.dest('dist/'));
 });
 
-
-gulp.task('build-css',
+gulp.task(
+  'build-css',
   gulp.series(
     gulp.parallel(
       'build-css:individual-components-md',
@@ -369,13 +430,12 @@ gulp.task('build-css',
       'build-css:concat-standalone-lg',
       'build-css:build-multistops'
     ),
-    gulp.parallel(
-      'build-css:concat-core-diff'
-    )
+    gulp.parallel('build-css:concat-core-diff')
   )
 );
 
-gulp.task('build-css-lite',
+gulp.task(
+  'build-css-lite',
   gulp.series(
     gulp.parallel(
       'build-css:all-components-multistops',
@@ -386,8 +446,6 @@ gulp.task('build-css-lite',
       'build-css:individual-components-diffscale',
       'build-css:build-multistops'
     ),
-    gulp.parallel(
-      'build-css:concat-core-diff'
-    )
+    gulp.parallel('build-css:concat-core-diff')
   )
 );

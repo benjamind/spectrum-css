@@ -35,9 +35,9 @@
   vertical-align: top;
 
   transition: background var(--spectrum-global-animation-duration-100) ease-out,
-              border-color var(--spectrum-global-animation-duration-100) ease-out,
-              color var(--spectrum-global-animation-duration-100) ease-out,
-              box-shadow var(--spectrum-global-animation-duration-100) ease-out;
+    border-color var(--spectrum-global-animation-duration-100) ease-out,
+    color var(--spectrum-global-animation-duration-100) ease-out,
+    box-shadow var(--spectrum-global-animation-duration-100) ease-out;
 
   text-decoration: none;
   font-family: var(--spectrum-font-family-base);
@@ -57,8 +57,8 @@
     padding: 0;
 
     /* Use uppercase PX so values don't get converted to rem */
-    margin-top: -2PX;
-    margin-bottom: -2PX;
+    margin-top: -2px;
+    margin-bottom: -2px;
   }
 
   /* Restore the focus styles unset by the previous rule. */
@@ -87,7 +87,12 @@
   height: var(--spectrum-button-primary-height);
   min-width: var(--spectrum-button-primary-min-width);
 
-  padding: 0 calc(var(--spectrum-button-primary-padding-x) - var(--spectrum-button-primary-border-size)) 0;
+  padding: 0
+    calc(
+      var(--spectrum-button-primary-padding-x) -
+        var(--spectrum-button-primary-border-size)
+    )
+    0;
 
   font-size: var(--spectrum-button-primary-text-size);
   font-weight: var(--spectrum-button-primary-text-font-weight);
@@ -125,7 +130,11 @@ a.spectrum-ActionButton {
   min-width: var(--spectrum-actionbutton-min-width);
 
   /* Use icon padding by default as it's smaller */
-  padding: 0 calc(var(--spectrum-actionbutton-icon-padding-x) - var(--spectrum-actionbutton-border-size));
+  padding: 0
+    calc(
+      var(--spectrum-actionbutton-icon-padding-x) -
+        var(--spectrum-actionbutton-border-size)
+    );
 
   border-width: var(--spectrum-actionbutton-border-size);
   border-radius: var(--spectrum-actionbutton-border-radius);
@@ -138,7 +147,10 @@ a.spectrum-ActionButton {
     padding-left: var(--spectrum-actionbutton-icon-padding-x);
 
     /* Have text padding on the right */
-    padding-right: calc(var(--spectrum-actionbutton-text-padding-x) - var(--spectrum-actionbutton-icon-padding-x));
+    padding-right: calc(
+      var(--spectrum-actionbutton-text-padding-x) -
+        var(--spectrum-actionbutton-icon-padding-x)
+    );
   }
 
   .spectrum-Icon--sizeS:only-child {
@@ -150,7 +162,11 @@ a.spectrum-ActionButton {
 
   .spectrum-ActionButton-label:only-child {
     /* Add padding for text only buttons */
-    padding: 0 calc(var(--spectrum-actionbutton-text-padding-x) - var(--spectrum-actionbutton-icon-padding-x));
+    padding: 0
+      calc(
+        var(--spectrum-actionbutton-text-padding-x) -
+          var(--spectrum-actionbutton-icon-padding-x)
+      );
   }
 }
 
